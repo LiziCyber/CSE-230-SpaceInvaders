@@ -1,53 +1,76 @@
-# CSE-230-SpaceInvaders
-## Overview
+# CSE230 Final Project -- Space Invaders
 
-### Project Title
-**Space Invader**
+#### Fall 2023
 
-### Description
-Space Invader is our Haskell-based modernization of the classic arcade game, Space Invaders. Players battle descending aliens, moving horizontally at the bottom of the screen. Using the Brick library, our project aims to preserve the game's nostalgic essence while incorporating fresh, dynamic gameplay elements.
-
-## Team Members
+#### Authors:
+- Jiahao Li
 - Shanhe Ding
 - Ziping Li
-- Jiahao Li
 - Zengmin Xiao
 
-## Goals and Objectives
-- Create an engaging and innovative arcade game using Haskell and the Brick library.
-- Enrich the traditional Space Invaders gameplay with contemporary and dynamic features.
-- Foster a collaborative environment, ensuring meaningful contributions from all team members.
+## Overview
+Space Invaders is an exciting space game where you control a spaceship to fight against aliens. The game combines action and strategy, perfect for players who enjoy both challenges and fun. 
 
-## Project Proposal
+It is great for those who love classic space games but also want something new. It's easy to learn but also makes you think and act quickly. Whether you are new to games or have been playing for years, Space Invaders offers fun and excitement.
 
-### Concept
-- A terminal-based adaptation of Space Invaders with augmented gameplay mechanics.
-- Retain core elements of the classic game while introducing new, engaging features.
 
-### Planned Features
-- **Classic Game Mechanics**: Maintain the player-controlled shooter, strategic barriers, and a scoring system based on alien elimination.
-- **Enhanced Player Movement**: Allow the player's shooter to move in all four directions, adding strategic depth.
-- **Diverse Enemy Types**: Introduce a variety of enemies with unique behaviors and attack patterns.
-- **Varied Ammunition**: Different bullet types for strategic gameplay.
+## Elements
+- Spaceship: Players can operate it to move to all four directions (↑←↓→). It has three lives at the beginning. Players can also improve the power of bullets at some points.
 
-### Additional Features
-- **Local Leaderboard**: Track and display high scores.
-- **Leveled Settings**: Adjustable difficulty settings and different levels.
-- **Endless Mode**: Continuous gameplay mode for an unending challenge.
+- Aliens: They move side by side all the time. As time progresses, they also descend vertically. Different aliens have different number of lives.
 
-### Development Approach
-- Utilize Haskell and the Brick library for robust and creative game development.
-- Regular team meetings for consistent progress and collaborative problem-solving.
-- GitHub for code sharing and version control.
+- Barriers: Players can utilize strategically placed barriers for cover. However, barriers may break if hit by bullets. 
 
-### Milestones
-- **11/17**: Proposal submission with detailed game concept and design.
-- **12/1**: Implementation of basic game mechanics and player movement feature.
-- **12/15**: Final game demonstration with all features.
 
-## Expected Outcomes
-- A unique, text-based version of Space Invaders with enhanced gameplay experience.
-- Showcase of our ability to adapt a classic game within Haskell programming.
-- Demonstration of teamwork, technical skills, and innovative problem-solving.
+## Game Rules
+- Winning condition: Players need to destroy all aliens to win. The game fails if any aliens reach the ground, or the spaceship has been shot for three times.
 
----
+- Scoring: Players earn 1 point for each alien they defeat. Meanwhile, there is a special enemy spaceship in the game -- beating it gives 10 points directly.
+
+- Leaderboard: Players can upload their scores in a leaderboard to compete with other records of the game.
+
+- Difficulty levels: Players can choose several levels to play. Each level has different number of aliens.
+
+
+## Instruction
+- Move Left: Arrow Left
+- Move Right: Arrow Right
+- Move Up: Arrow Up
+- Move Down: Arrow Down
+- Shoot: Space
+- Pause: Key 'P'
+- Restart: Key 'R'
+
+
+## Architecture
+The game is structured into four core modules:
+- **Data.hs:** Defines game data types and structures.
+- **GameHandler.hs:** Handles the game logic and state updates.
+- **UI.hs:** Focuses on rendering the game's user interface.
+- **Main.hs:** Manages the integration of game logic with the user interface.
+
+
+## Challenge
+A notable challenge in our game development surfaced while implementing the interaction mechanics with barriers. These barriers were composed of multiple bricks, each designed to withstand up to three hits before completely disappearing. The complexity arose in visually and functionally differentiating the bricks based on the number of hits they had endured. After a brick was hit once or twice, it needed to not only exhibit a distinct appearance to reflect its damaged state but also maintain its interactive properties correctly. This required a careful blend of graphical changes and game logic adjustments. We had to ensure that each hit visibly altered the brick's appearance in a clear and understandable way for the players, while also maintaining the integrity of the game's physics and collision detection systems. Balancing the visual feedback to players and the underlying game mechanics for these evolving barrier states proved to be a meticulous and challenging aspect of our development process.
+
+
+## Installation
+Use the following cabal command to install Space Invaders:
+```
+$ cabal update
+$ cabal run spaceinvaders
+```
+
+
+## Usage
+Run the executable created after compilation to play Space Invaders:
+```
+./Main
+```
+
+## Testing
+Tests are located in the `test` Folder.
+To run tests:
+```
+$ cabal run spaceinvaders-test
+```
