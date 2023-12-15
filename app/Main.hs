@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
 import UI
@@ -18,108 +20,96 @@ import Brick
   , neverShowCursor, customMain, halt, modify, get, put
   )
 
--- | Initialize the app
+-- App Initialization
 app :: App AppState Tick Name
-app = App { appDraw = drawUI
-          , appChooseCursor = neverShowCursor
-          , appHandleEvent = handleEvent
-          , appStartEvent = pure ()
-          , appAttrMap = const attributeMap
-          }
+app = App
+  { appDraw = drawUI
+  , appChooseCursor = neverShowCursor
+  , appHandleEvent = handleEvent
+  , appStartEvent = pure ()
+  , appAttrMap = const attributeMap
+  }
 
--- | Main entry point, set tickspeed and start the game
+-- Main entry point
 main :: IO ()
 main = do
   chan <- newBChan 10
   _ <- forkIO $ forever $ do
-        writeBChan chan Tick
-        threadDelay 100000 -- Tick speed
+    writeBChan chan Tick
+    threadDelay 100000 -- Tick speed
   initState <- initAppState
   let builder = mkVty defaultConfig
   initialVty <- builder
   void $ customMain initialVty builder (Just chan) app initState
 
--- | Handle gameticks and keyboard inputs
+-- Event Handling
 handleEvent :: BrickEvent Name Tick -> EventM Name AppState ()
-handleEvent (AppEvent Tick)                       = step  
-handleEvent (VtyEvent (V.EvKey V.KRight []))      = do
-                                                      appState <- get
-                                                      case appState of 
-                                                        MenuState -> put appState 
-                                                        -- DialogState d -> put appState 
-                                                        GameState _ -> continue $ moveHorizontal (+ 1)
-                                                        LeaderboardState l -> put $ LeaderboardState (l {startIdx = let idx = startIdx l in if idx+recordsPerPage >= length (records l) then idx else idx+recordsPerPage})
-handleEvent (VtyEvent (V.EvKey V.KLeft []))       = do
-                                                      appState <- get
-                                                      case appState of 
-                                                        MenuState -> put appState 
-                                                        -- DialogState d -> put appState 
-                                                        GameState _ -> continue $ moveHorizontal (subtract 1)
-                                                        LeaderboardState l -> put $ LeaderboardState (l {startIdx = max 0 (startIdx l - recordsPerPage)})
-handleEvent (VtyEvent (V.EvKey V.KUp []))         = continue $ moveVertical (+ 1)
-handleEvent (VtyEvent (V.EvKey V.KDown []))       = continue $ moveVertical (subtract 1)
-handleEvent (VtyEvent (V.EvKey V.KEsc []))        = quitGame
+handleEvent (AppEvent Tick) = step
+handleEvent (VtyEvent (V.EvKey V.KRight [])) = continue $ moveHorizontal (+ 1)
+handleEvent (VtyEvent (V.EvKey V.KLeft [])) = continue $ moveHorizontal (subtract 1)
+handleEvent (VtyEvent (V.EvKey V.KUp [])) = continue $ moveVertical (+ 1)
+handleEvent (VtyEvent (V.EvKey V.KDown [])) = continue $ moveVertical (subtract 1)
+handleEvent (VtyEvent (V.EvKey V.KEsc [])) = quitGame
 handleEvent (VtyEvent (V.EvKey (V.KChar ' ') [])) = continue shoot
 handleEvent (VtyEvent (V.EvKey (V.KChar 'p') [])) = continue pause
 handleEvent (VtyEvent (V.EvKey (V.KChar 'r') [])) = continue restart
 handleEvent (VtyEvent (V.EvKey (V.KChar 'l') [])) = showLeaderboard
-handleEvent (VtyEvent (V.EvKey V.KEnter []))      = modify startGame
-handleEvent _                                     = pure ()
+handleEvent (VtyEvent (V.EvKey V.KEnter [])) = modify startGame
+handleEvent _ = pure ()
 
+-- Game Logic Step
 step :: EventM Name AppState ()
 step = do
-        appState <- get
-        case appState of
-          MenuState -> put appState
-          LeaderboardState _ -> put appState 
-          -- DialogState d -> put appState 
-          GameState g ->  if stopped g then put (GameState g)
-                          else do
-                          let movedShots = map (\v -> V2 (v ^._x) (v ^._y + 1)) $ shots g -- move shots
-                          let movedAlienShots = map (\v -> V2 (v ^._x) (v ^._y - 1)) $ alienShots g -- move alien shots
-                          let a = handleAliens g movedShots -- update aliens
-                          let b = handleBlocker g movedShots movedAlienShots -- update blockers 
-                          let s = handleShots g movedShots -- update shots
-                          let l = handleLives g movedAlienShots a -- update lives
-                          let as = handleAlienShots g movedAlienShots -- update alien shots
-                          let d = handleDirection g a -- update alien direction
-                          let u = handleUfo g movedShots -- update ufo
-                          let sc = handleScore g movedShots -- update score
-                          let gUpd = g {aliens = a, ufo = u, shots = s, alienShots = as,
-                                count = nextCount g, aShotCount = nextAShotCount g, ufoCount = nextUfoCount g,
-                                blockers = b, alienDir = d, score = sc ,lives = l}
-                          new_g <- liftIO $ levelUp gUpd -- update level
-                          put $ GameState new_g
+  appState <- get
+  case appState of
+    MenuState -> put appState
+    LeaderboardState _ -> put appState
+    GameState g -> if stopped g
+      then put (GameState g)
+      else do
+        let movedShots = map (\v -> V2 (v ^._x) (v ^._y + 1)) $ shots g
+        let movedAlienShots = map (\v -> V2 (v ^._x) (v ^._y - 1)) $ alienShots g
+        let a = handleAliens g movedShots
+        let b = handleBlocker g movedShots movedAlienShots
+        let s = handleShots g movedShots
+        let l = handleLives g movedAlienShots a
+        let as = handleAlienShots g movedAlienShots
+        let d = handleDirection g a
+        let u = handleUfo g movedShots
+        let sc = handleScore g movedShots
+        let gUpd = g {aliens = a, ufo = u, shots = s, alienShots = as,
+                      count = nextCount g, aShotCount = nextAShotCount g, ufoCount = nextUfoCount g,
+                      blockers = b, alienDir = d, score = sc, lives = l}
+        new_g <- liftIO $ levelUp gUpd
+        put $ GameState new_g
 
+-- Helper Functions
 continue :: (Game -> Game) -> EventM Name AppState ()
 continue f = do
-              appState <- get
-              case appState of
-                MenuState -> put appState
-                -- DialogState d -> put appState 
-                GameState g -> put (GameState (f g))
-                LeaderboardState _ -> put appState 
+  appState <- get
+  case appState of
+    MenuState -> put appState
+    GameState g -> put (GameState (f g))
+    LeaderboardState _ -> put appState
 
 startGame :: AppState -> AppState
 startGame MenuState = GameState initGame
 startGame x = x
 
 quitGame :: EventM Name AppState ()
-quitGame = do 
-            appState <- get
-            case appState of
-              MenuState -> halt
-              GameState _ -> put MenuState
-              LeaderboardState _ -> put MenuState
-              -- DialogState d -> put MenuState 
+quitGame = do
+  appState <- get
+  case appState of
+    MenuState -> halt
+    GameState _ -> put MenuState
+    LeaderboardState _ -> put MenuState
 
 showLeaderboard :: EventM Name AppState ()
 showLeaderboard = do
-                    appState <- get
-                    case appState of
-                      MenuState -> do
-                                    r <- liftIO getRecords
-                                    put (LeaderboardState (Leaderboard {records = r, startIdx = 0}))
-                      GameState g -> put (GameState g)
-                      LeaderboardState l -> put (LeaderboardState l)
-                      -- DialogState d -> put appState
+  appState <- get
+  case appState of
+    MenuState -> do
+      r <- liftIO getRecords
+      put (LeaderboardState (Leaderboard {records = r, startIdx = 0}))
+    GameState g -> put (GameState g)
+    LeaderboardState l -> put (LeaderboardState l)
