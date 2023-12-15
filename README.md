@@ -59,18 +59,11 @@ A notable challenge in our game development surfaced while implementing the inte
 Another challenge we met was handling the efficient storage and retrieval of leaderboard records in the SQLite database, particularly in ensuring that the data schema and queries were optimized for quick access and updates. Managing the leaderboard's growing data size while maintaining fast query performance for displaying high scores and implementing pagination effectively, posed a complex task, especially in an offline, resource-constrained environment.
 
 
-## Installation
-Use the following cabal command to install Space Invaders:
+## Installation and Usage
+Use the following cabal command to install packages and run Space Invaders:
 ```
 $ cabal update
 $ cabal run spaceinvaders
-```
-
-
-## Usage
-Run the executable created after compilation to play Space Invaders:
-```
-./Main
 ```
 
 ## Testing
