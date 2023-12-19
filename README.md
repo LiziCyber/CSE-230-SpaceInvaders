@@ -80,7 +80,7 @@ We referred this github repo [BrickInvaders](https://github.com/svbo/BrickInvade
 
 ### Dependency Updates
 
-BrickInvaders has been updated to support the latest versions of core dependencies. Notably, the codebase has been adapted to accommodate changes in `brick` from 0.7x to 2.1.1 and `vty` from 5.x to 6.1.
+SpaceInvaders has been updated to support the latest versions of core dependencies. Notably, the codebase has been adapted to accommodate changes in `brick` from 0.7x to 2.1.1 and `vty` from 5.x to 6.1.
 
 ### Advanced Shooting Mechanism
 
@@ -96,7 +96,7 @@ Enjoy a more polished gaming experience with improved user interfaces, including
 
 ### SQLite Leaderboard Integration
 
-BrickInvaders now features an SQLite-enhanced leaderboard, showcasing score rankings along with additional information such as time and gamer names. Track your progress and compete with others for the top spot!
+SpaceInvaders now features an SQLite-enhanced leaderboard, showcasing score rankings along with additional information such as time and gamer names. Track your progress and compete with others for the top spot!
 
 ### Diverse Enemy Types
 
