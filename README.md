@@ -102,6 +102,10 @@ BrickInvaders now features an SQLite-enhanced leaderboard, showcasing score rank
 
 Encounter new types of enemies, each with unique behaviors and shooting patterns. The game's logic has been expanded to handle the variety in enemy behavior, providing a richer and more challenging gaming environment.
 
+### Visual Damage Indication
+
+Enemies that can withstand multiple shots now feature a visual representation of injury when hit. Witness the evolution of enemy appearance as they sustain damage, providing players with a clear visual cue of their progress in defeating tougher adversaries.
+
 ### Special Effects
 
 Experience new visual effects with new shooting effects for both the spaceship and enemies. Additionally, enjoy immersive breaking effects for walls, enhancing the overall visual appeal of the game.
