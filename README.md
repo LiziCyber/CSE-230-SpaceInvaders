@@ -72,3 +72,44 @@ To run tests:
 ```
 $ cabal run spaceinvaders-test
 ```
+
+## Reference
+We referred this github repo [BrickInvaders](https://github.com/svbo/BrickInvaders).
+
+## New Features
+
+### Dependency Updates
+
+BrickInvaders has been updated to support the latest versions of core dependencies. Notably, the codebase has been adapted to accommodate changes in `brick` from 0.7x to 2.1.1 and `vty` from 5.x to 6.1.
+
+### Advanced Shooting Mechanism
+
+Players can now fire multiple shots simultaneously, introducing a more dynamic and engaging gameplay experience. Additionally, a new logic for level upgrading has been implemented, providing a rewarding progression system.
+
+### Vertical Movement Capability
+
+Navigate your spaceship not only horizontally but also vertically. This includes sophisticated collision handling with enemies and walls, adding depth to the strategic aspects of the game.
+
+### Enhanced User Interfaces
+
+Enjoy a more polished gaming experience with improved user interfaces, including a start menu and an enhanced in-game interface for better navigation and interaction.
+
+### SQLite Leaderboard Integration
+
+BrickInvaders now features an SQLite-enhanced leaderboard, showcasing score rankings along with additional information such as time and gamer names. Track your progress and compete with others for the top spot!
+
+### Diverse Enemy Types
+
+Encounter new types of enemies, each with unique behaviors and shooting patterns. The game's logic has been expanded to handle the variety in enemy behavior, providing a richer and more challenging gaming environment.
+
+### Special Effects
+
+Experience new visual effects with new shooting effects for both the spaceship and enemies. Additionally, enjoy immersive breaking effects for walls, enhancing the overall visual appeal of the game.
+
+### Redesigned Spaceship and Enemies
+
+Enjoy a fresh look for both the spaceship and enemies, contributing to an updated and visually appealing gaming atmosphere.
+
+### New Unit Tests
+
+The project includes a NEW comprehensive suite of unit tests to ensure the stability and correctness of the dependency migration and new features.
